@@ -7,7 +7,7 @@
 #include <s2/s2latlng.h>
 
 #define LOOP_LIMIT 1
-#define POINT_LIMIT 64
+#define POINT_LIMIT 12384
 
 enum ParsingState
 {

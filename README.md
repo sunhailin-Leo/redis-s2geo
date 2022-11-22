@@ -23,6 +23,9 @@ Simple Redis Module for geospatial queries, which utilizes S2 Region Coverer alg
 
 <!-- toc stop -->
 
+# Docker Usage
+`Use project root directory Dockerfile to build a docker with redis base image(6.0.X and 7.0.X are test it ok!)`
+
 # How to build
 
 ## Build absl library (S2 dependency)
@@ -39,7 +42,7 @@ Simple Redis Module for geospatial queries, which utilizes S2 Region Coverer alg
 ## Build redis-s2geo
 `mkdir build && cd build`
 
-`cmake -DABSL_PATH="<ABSL_PATH>" # On Mac you may have to provide -DOPENSSL_ROOT_DIR=$(brew --prefix openssl)`
+`cmake -DABSL_PATH="<ABSL_PATH>" # On Mac you may have to provide -DOPENSSL_ROOT_DIR=$(brew --prefix openssl) ..`
 
 `make`
 

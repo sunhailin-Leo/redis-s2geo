@@ -99,9 +99,8 @@ int ValidateIndex(RedisModuleCtx *ctx, RedisModuleString *indexName)
     RedisModuleString *metaHashKey = CreateIndexMetaHashKey(ctx, indexName);
     RedisModuleCallReply *reply = RedisModule_Call(ctx, "HGET", "sc", metaHashKey, INDEX_PARAMS_KEY);
     RedisModule_Log(ctx, "debug", "RedisModule_Call reply type %d", RedisModule_CallReplyType(reply));
-    RedisModule_Log(ctx, "debug", "RedisModule_Call reply value %s", RedisModule_StringPtrLen(RedisModule_CreateStringFromCallReply(reply), NULL));
     int type = RedisModule_CallReplyType(reply);
-    if (type == REDISMODULE_REPLY_NULL)
+    if (type == REDISMODULE_REPLY_NULL || type == REDISMODULE_REPLY_UNKNOWN)
     {
         return S2GEO_ERR_NO_SUCH_INDEX;
     }

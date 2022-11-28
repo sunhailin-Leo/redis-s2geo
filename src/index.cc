@@ -97,18 +97,42 @@ RedisModuleString *CreateIndexCellsPattern(RedisModuleCtx *ctx, RedisModuleStrin
 int ValidateIndex(RedisModuleCtx *ctx, RedisModuleString *indexName)
 {
     RedisModuleString *metaHashKey = CreateIndexMetaHashKey(ctx, indexName);
-    RedisModuleCallReply *reply = RedisModule_Call(ctx, "HGET", "sc", metaHashKey, INDEX_PARAMS_KEY);
-    int type = RedisModule_CallReplyType(reply);
-    if (type == REDISMODULE_REPLY_NULL)
+//    RedisModuleCallReply *reply = RedisModule_Call(ctx, "HGET", "sc", metaHashKey, INDEX_PARAMS_KEY);
+//    int type = RedisModule_CallReplyType(reply);
+//    if (type == REDISMODULE_REPLY_NULL)
+//    {
+//        return S2GEO_ERR_NO_SUCH_INDEX;
+//    }
+//    if (RedisModule_CallReplyType(reply) != REDISMODULE_REPLY_STRING)
+//    {
+//        return S2GEO_ERR_INVALID_INDEX;
+//    }
+//
+//    RedisModuleString *value = RedisModule_CreateStringFromCallReply(reply);
+//    size_t len;
+//    const char *cValue = RedisModule_StringPtrLen(value, &len);
+//    if (strcmp(INDEX_PARAMS_VALUE, cValue) != 0)
+//    {
+//        return S2GEO_ERR_INVALID_INDEX;
+//    }
+
+    // New logic
+    // open the key and make sure it is indeed a Hash and not empty
+    RedisModuleKey *key = RedisModule_OpenKey(ctx, metaHashKey, REDISMODULE_READ | REDISMODULE_WRITE);
+    if ((RedisModule_KeyType(key) != REDISMODULE_KEYTYPE_EMPTY) &&
+        (RedisModule_KeyType(key) != REDISMODULE_KEYTYPE_HASH)) {
+        RedisModule_ReplyWithError(ctx, REDISMODULE_ERRORMSG_WRONGTYPE);
+        return REDISMODULE_ERR;
+    }
+    // get the current value of the hash element
+    RedisModuleString *value;
+    RedisModule_HashGet(key, REDISMODULE_HASH_NONE, INDEX_PARAMS_KEY, &value, NULL);
+
+    if (!value)
     {
         return S2GEO_ERR_NO_SUCH_INDEX;
     }
-    if (RedisModule_CallReplyType(reply) != REDISMODULE_REPLY_STRING)
-    {
-        return S2GEO_ERR_INVALID_INDEX;
-    }
 
-    RedisModuleString *value = RedisModule_CreateStringFromCallReply(reply);
     size_t len;
     const char *cValue = RedisModule_StringPtrLen(value, &len);
     if (strcmp(INDEX_PARAMS_VALUE, cValue) != 0)

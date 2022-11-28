@@ -98,7 +98,7 @@ int ValidateIndex(RedisModuleCtx *ctx, RedisModuleString *indexName)
 {
     RedisModuleString *metaHashKey = CreateIndexMetaHashKey(ctx, indexName);
     RedisModuleCallReply *reply = RedisModule_Call(ctx, "HGET", "sc", metaHashKey, INDEX_PARAMS_KEY);
-    RedisModule_Log(ctx, "debug", "RedisModule_Call reply type %d", RedisModule_CallReplyType(reply));
+    RedisModule_Log(ctx, "debug", "ValidateIndex ==> RedisModule_Call reply type %d", RedisModule_CallReplyType(reply));
     int type = RedisModule_CallReplyType(reply);
     if (type == REDISMODULE_REPLY_NULL || type == REDISMODULE_REPLY_UNKNOWN)
     {
@@ -135,6 +135,7 @@ int CreateIndex(RedisModuleCtx *ctx, RedisModuleString *indexName)
 {
     RedisModuleString *metaHashKey = CreateIndexMetaHashKey(ctx, indexName);
     RedisModuleCallReply *reply = RedisModule_Call(ctx, "HSET", "scc", metaHashKey, INDEX_PARAMS_KEY, INDEX_PARAMS_VALUE);
+    RedisModule_Log(ctx, "debug", "CreateIndex ==> RedisModule_Call reply type %d", RedisModule_CallReplyType(reply));
     return 0;
 }
 
